@@ -1,7 +1,7 @@
 ﻿{
     "module":  {
                    "id":  "ORA_CORE_RAG",
-                   "version":  "1.1.0-public-draft",
+                   "version":  "1.2.0-public-draft",
                    "status":  "PUBLIC_DRAFT",
                    "type":  "canonical_retrieval_layer",
                    "role":  "Retrieve source-backed ORA canon context without storing client payloads.",
@@ -50,7 +50,9 @@
                              "INDEX_CHUNKS_FTS5",
                              "RETRIEVE_SOURCE_BACKED_CONTEXT",
                              "OPTIONAL_ORCHESTRATEUR_LLM_PACKET",
-                             "OPTIONAL_JSONL_AUDIT"
+                             "OPTIONAL_JSONL_AUDIT",
+                             "OPTIONAL_CLIENT_ROUTE_PLANNING",
+                             "OPTIONAL_NEROFLUX_FANOUT_REGULATION"
                          ],
     "success_criteria":  [
                              "retrieves exact ORA module names",
@@ -96,5 +98,43 @@
                                                    "authority_path",
                                                    "retrieval"
                                                ]
-                               }
+                               },
+    "multi_rag_registry":  {
+                               "mode":  "route_gated_activation_plan",
+                               "allowed_resource_types":  [
+                                                              "rag",
+                                                              "agent",
+                                                              "llm"
+                                                          ],
+                               "client_scopes":  [
+                                                     "TENANT",
+                                                     "DEPARTMENT",
+                                                     "PRIVATE_CASE"
+                                                 ],
+                               "can_answer_final":  false,
+                               "cross_tenant_access":  "DENY"
+                           },
+    "neroflux_fanout":  {
+                            "module":  "NEROFLUX_FANOUT_REGULATOR",
+                            "inputs":  [
+                                           "retrieval_pressure",
+                                           "source_conflict",
+                                           "permission_risk",
+                                           "injection_risk",
+                                           "latency_pressure",
+                                           "cost_pressure",
+                                           "client_sensitivity",
+                                           "urgency",
+                                           "agent_count",
+                                           "contradiction"
+                                       ],
+                            "outputs":  [
+                                            "pace",
+                                            "max_rag_fanout",
+                                            "top_k_per_rag",
+                                            "require_hnerons",
+                                            "require_human_review",
+                                            "actions"
+                                        ]
+                        }
 }

@@ -1,10 +1,10 @@
 ﻿# MODULE_ORA_CORE_RAG
 
-Version: `0.2.0`
+Version: `0.3.0`
 
 ## Definition
 
-`ORA_CORE_RAG` is the canonical retrieval layer for `ORA_CORE_OS`. It indexes public ORA sources, retrieves source-backed context, and produces audit-friendly retrieval packets for the larger ORA pipeline.
+`ORA_CORE_RAG` is the canonical retrieval and multi-RAG control layer for `ORA_CORE_OS`. It indexes public ORA sources, retrieves source-backed context, produces audit-friendly retrieval packets, and plans isolated client RAG/agent activation.
 
 It remains intentionally small:
 
@@ -14,7 +14,9 @@ It remains intentionally small:
 - JSON manifests
 - public GitHub source discovery
 - JSONL audit logging
-- route gate for future client RAG isolation
+- GLK route gate for client RAG isolation
+- multi-RAG / agent registry
+- deterministic Neroflux fanout regulation
 - minimal `ORCHESTRATEUR_LLM` connector
 
 ## Authority Position
@@ -27,9 +29,9 @@ It remains intentionally small:
 4. `GPV2`
 5. `H-NERONS`
 
-It supplies canon evidence. It does not decide final truth.
+It supplies canon evidence and activation plans. It does not decide final truth.
 
-## V0.2 Runtime Flow
+## V0.3 Runtime Flow
 
 ```text
 LOAD_OR_DISCOVER_SOURCES
@@ -38,8 +40,16 @@ LOAD_OR_DISCOVER_SOURCES
   -> CHUNK_SOURCE
   -> INDEX_CHUNKS_FTS5
   -> RETRIEVE_SOURCE_BACKED_CONTEXT
-  -> EMIT_JSONL_AUDIT_OPTIONAL
-  -> RETURN_ORCHESTRATOR_PACKET_OPTIONAL
+  -> OPTIONAL_ORCHESTRATEUR_LLM_PACKET
+  -> OPTIONAL_JSONL_AUDIT
+
+CLIENT_ACTIVATION_FLOW
+  -> VALIDATE_GLK_ROUTE
+  -> LOAD_RAG_REGISTRY
+  -> AUTHORIZE_RESOURCE_IDS
+  -> NEROFLUX_FANOUT_REGULATION
+  -> SELECT_ALLOWED_RAGS_AND_AGENTS
+  -> DENY_CROSS_TENANT_OR_OVERFLOW
 ```
 
 ## Security Rules
@@ -48,9 +58,11 @@ LOAD_OR_DISCOVER_SOURCES
 - deny client retrieval without a valid route manifest
 - deny cross-tenant RAG or agent access
 - route IDs must be opaque and non-sensitive
+- registry entries cannot set `can_answer_final=true`
 - route manifests can be stored, but client content cannot
 - audit logs should store retrieval metadata, not private client payloads
+- Neroflux regulates circulation only; it does not govern truth
 
 ## Future Modules
 
-Later versions can add embeddings, graph retrieval, FastAPI, n8n hooks, live GitHub webhooks and client RAG connectors.
+Later versions can add embeddings, graph retrieval, FastAPI, n8n hooks, live GitHub webhooks and real client RAG connectors.

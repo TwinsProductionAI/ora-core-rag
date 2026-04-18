@@ -7,7 +7,9 @@ import json
 
 from .github_sources import GitHubSourceDiscovery
 from .index import ORACoreIndex
+from .neroflux import NerofluxFanoutRegulator
 from .orchestrator import ORAOrchestratorConnector
+from .registry import RAGRegistry
 from .route_gate import ClientRouteGate
 
 
@@ -17,6 +19,21 @@ def _print_json(value: object) -> None:
 
 def _index_from_args(args: argparse.Namespace) -> ORACoreIndex:
     return ORACoreIndex(args.db, audit_log=getattr(args, "audit_log", None))
+
+
+def _signal_from_args(args: argparse.Namespace) -> dict[str, object]:
+    return {
+        "retrieval_pressure": args.retrieval_pressure,
+        "source_conflict": args.source_conflict,
+        "permission_risk": args.permission_risk,
+        "injection_risk": args.injection_risk,
+        "latency_pressure": args.latency_pressure,
+        "cost_pressure": args.cost_pressure,
+        "client_sensitivity": args.client_sensitivity,
+        "urgency": args.urgency,
+        "agent_count": getattr(args, "agent_count", 0),
+        "contradiction": args.contradiction,
+    }
 
 
 def cmd_init(args: argparse.Namespace) -> None:
@@ -83,6 +100,18 @@ def cmd_orchestrate_query(args: argparse.Namespace) -> None:
     _print_json(packet)
 
 
+def cmd_neroflux_regulate(args: argparse.Namespace) -> None:
+    _print_json(NerofluxFanoutRegulator().regulate(_signal_from_args(args)))
+
+
+def cmd_plan_client(args: argparse.Namespace) -> None:
+    gate = ClientRouteGate()
+    route = gate.load_manifest(args.route_manifest)
+    registry = RAGRegistry.from_path(args.registry)
+    plan = registry.plan(route_manifest=route, requested_ids=args.resource or None, neroflux_signal=_signal_from_args(args))
+    _print_json(plan)
+
+
 def cmd_validate_route(args: argparse.Namespace) -> None:
     gate = ClientRouteGate()
     route = gate.load_manifest(args.manifest)
@@ -111,6 +140,20 @@ def _add_github_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--canon-level", default="RUNTIME")
     parser.add_argument("--tag", action="append", default=[])
     parser.add_argument("--limit", type=int, default=None)
+
+
+def _add_neroflux_args(parser: argparse.ArgumentParser, *, include_agent_count: bool = True) -> None:
+    parser.add_argument("--retrieval-pressure", type=float, default=0.0)
+    parser.add_argument("--source-conflict", type=float, default=0.0)
+    parser.add_argument("--permission-risk", type=float, default=0.0)
+    parser.add_argument("--injection-risk", type=float, default=0.0)
+    parser.add_argument("--latency-pressure", type=float, default=0.0)
+    parser.add_argument("--cost-pressure", type=float, default=0.0)
+    parser.add_argument("--client-sensitivity", type=float, default=0.0)
+    parser.add_argument("--urgency", type=float, default=0.0)
+    if include_agent_count:
+        parser.add_argument("--agent-count", type=int, default=0)
+    parser.add_argument("--contradiction", action="store_true")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -151,6 +194,17 @@ def build_parser() -> argparse.ArgumentParser:
     orchestrate.add_argument("--top-k", type=int, default=5)
     _add_db_args(orchestrate)
     orchestrate.set_defaults(func=cmd_orchestrate_query)
+
+    neroflux = sub.add_parser("neroflux-regulate", help="Regulate multi-RAG fanout with deterministic Neroflux policy")
+    _add_neroflux_args(neroflux)
+    neroflux.set_defaults(func=cmd_neroflux_regulate)
+
+    plan_client = sub.add_parser("plan-client", help="Build a route-gated multi-RAG/client activation plan")
+    plan_client.add_argument("--route-manifest", required=True)
+    plan_client.add_argument("--registry", required=True)
+    plan_client.add_argument("--resource", action="append", default=[])
+    _add_neroflux_args(plan_client, include_agent_count=False)
+    plan_client.set_defaults(func=cmd_plan_client)
 
     validate_route = sub.add_parser("validate-route", help="Validate a GLK client route manifest")
     validate_route.add_argument("--manifest", required=True)

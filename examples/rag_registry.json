@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0",
+  "version": "1.1.0",
   "entries": [
     {
       "id": "ORA_CORE_RAG",
@@ -13,6 +13,33 @@
       "type": "rag",
       "scope": "TENANT",
       "tenant_id": "K7F3",
+      "allowed_roles": ["tenant_user", "tenant_admin"],
+      "source_required": true,
+      "can_answer_final": false
+    },
+    {
+      "id": "K7F3_RAG_SUPPORT",
+      "type": "rag",
+      "scope": "TENANT",
+      "tenant_id": "K7F3",
+      "allowed_roles": ["support", "tenant_admin"],
+      "source_required": true,
+      "can_answer_final": false
+    },
+    {
+      "id": "K7F3_AGENT_SUPPORT",
+      "type": "agent",
+      "scope": "TENANT",
+      "tenant_id": "K7F3",
+      "allowed_roles": ["support", "tenant_admin"],
+      "source_required": true,
+      "can_answer_final": false
+    },
+    {
+      "id": "ABCD_RAG_DOCS",
+      "type": "rag",
+      "scope": "TENANT",
+      "tenant_id": "ABCD",
       "allowed_roles": ["tenant_user", "tenant_admin"],
       "source_required": true,
       "can_answer_final": false

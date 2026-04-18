@@ -1,19 +1,20 @@
 ﻿# ORA_CORE_RAG
 
-Canonical retrieval layer for ORA_CORE_OS.
+Canonical retrieval and multi-RAG control layer for ORA_CORE_OS.
 
-Status: `0.2.0`
+Status: `0.3.0`
 
 `ORA_CORE_RAG` is a local-first, deterministic retrieval engine for the public ORA canon. It indexes ORA technical files, retrieves source-backed context, emits audit traces, and keeps client data outside the core memory boundary.
 
-## V0.2 Capabilities
+## V0.3 Capabilities
 
 - automatic discovery and ingestion from public GitHub repositories
 - optional JSONL audit log for indexing, queries and orchestrator packets
 - minimal `ORCHESTRATEUR_LLM` connector returning a routed retrieval packet
-- SQLite FTS5 exact text retrieval
-- deterministic source and chunk hashes
-- GLK client route gate for future tenant RAG isolation
+- GLK client route gate for tenant isolation
+- multi-RAG / agent registry planning
+- deterministic Neroflux fanout regulation
+- anti-contamination checks for cross-tenant resources
 
 ## Quick Start
 
@@ -49,6 +50,18 @@ Return an orchestrator-shaped retrieval packet:
 python -m ora_core_rag orchestrate-query "ORCHESTRATEUR_LLM verification" --risk-level MID --db data/index/ora_core_rag.sqlite
 ```
 
+Regulate fanout with Neroflux:
+
+```powershell
+python -m ora_core_rag neroflux-regulate --client-sensitivity 0.9 --permission-risk 0.7 --agent-count 4
+```
+
+Build a route-gated client activation plan:
+
+```powershell
+python -m ora_core_rag plan-client --route-manifest examples/client_route_manifest.json --registry examples/rag_registry.json --client-sensitivity 0.4
+```
+
 ## Architecture
 
 ```text
@@ -58,7 +71,10 @@ User request
 ORCHESTRATEUR_LLM
   |
   v
-Neroflux
+Neroflux fanout regulator
+  |-- caps RAG fanout
+  |-- reduces top_k under pressure
+  |-- requires H-NERONS when conflict or sensitivity rises
   |
   v
 ORA_CORE_RAG
@@ -69,9 +85,10 @@ ORA_CORE_RAG
   |-- GitHub public source discovery
   |
   v
-Client Route Gate
-  |-- GLK tenant route required for future client RAGs
-  |-- no cross-tenant access
+Client Route Gate + RAG Registry
+  |-- GLK tenant route required for client RAGs
+  |-- registry entries cannot answer final directly
+  |-- cross-tenant access denied
   |-- no client writes to ORA core
 ```
 
@@ -80,6 +97,7 @@ Client Route Gate
 ```text
 ORA_CORE_RAG indexes ORA canon only.
 Client RAGs require a GLK tenant route and stay outside the core index.
+Neroflux can reduce fanout, but truth still goes through HGOV/H-NERONS/Primordia.
 ```
 
 ## Non-Goals
