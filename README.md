@@ -124,9 +124,9 @@ Neroflux can reduce fanout, but truth still goes through HGOV/H-NERONS/Primordia
 The RAG Governor wires the local runtime; it does not bypass governance.
 ```
 
-## Podman Note
+## Note
 
-Podman Desktop can be used later for service deployment. V0.4 does not require containers: Python + SQLite FTS5 are enough for the local Governor.
+V0.4 does not require containers: Python + SQLite FTS5 are enough for the local Governor.
 
 ## Non-Goals
 
