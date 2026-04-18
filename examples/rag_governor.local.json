@@ -1,0 +1,29 @@
+﻿{
+  "version": "0.4.0",
+  "profile": "local-governor",
+  "paths": {
+    "db": "data/index/rag_governor.sqlite",
+    "audit_log": "data/audit/rag_governor.jsonl"
+  },
+  "sources_manifest": "examples/ora_sources.json",
+  "route_manifest": "examples/client_route_manifest.json",
+  "rag_registry": "examples/rag_registry.json",
+  "defaults": {
+    "query": "ORCHESTRATEUR_LLM verification",
+    "top_k": 5,
+    "risk_level": "MID",
+    "freshness_need": "LOW",
+    "source_required": true,
+    "neroflux_signal": {
+      "retrieval_pressure": 0.35,
+      "source_conflict": 0.0,
+      "permission_risk": 0.1,
+      "injection_risk": 0.1,
+      "latency_pressure": 0.2,
+      "cost_pressure": 0.2,
+      "client_sensitivity": 0.4,
+      "urgency": 0.0,
+      "contradiction": false
+    }
+  }
+}

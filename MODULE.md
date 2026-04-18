@@ -1,10 +1,10 @@
 ﻿# MODULE_ORA_CORE_RAG
 
-Version: `0.3.0`
+Version: `0.4.0`
 
 ## Definition
 
-`ORA_CORE_RAG` is the canonical retrieval and multi-RAG control layer for `ORA_CORE_OS`. It indexes public ORA sources, retrieves source-backed context, produces audit-friendly retrieval packets, and plans isolated client RAG/agent activation.
+`ORA_CORE_RAG` is the canonical retrieval, multi-RAG control and local RAG Governor layer for `ORA_CORE_OS`. It indexes public ORA sources, retrieves source-backed context, produces audit-friendly retrieval packets, plans isolated client RAG/agent activation, and can bootstrap a local governed runtime profile.
 
 It remains intentionally small:
 
@@ -18,6 +18,7 @@ It remains intentionally small:
 - multi-RAG / agent registry
 - deterministic Neroflux fanout regulation
 - minimal `ORCHESTRATEUR_LLM` connector
+- local RAG Governor runtime and configuration
 
 ## Authority Position
 
@@ -31,7 +32,7 @@ It remains intentionally small:
 
 It supplies canon evidence and activation plans. It does not decide final truth.
 
-## V0.3 Runtime Flow
+## V0.4 Runtime Flow
 
 ```text
 LOAD_OR_DISCOVER_SOURCES
@@ -50,6 +51,14 @@ CLIENT_ACTIVATION_FLOW
   -> NEROFLUX_FANOUT_REGULATION
   -> SELECT_ALLOWED_RAGS_AND_AGENTS
   -> DENY_CROSS_TENANT_OR_OVERFLOW
+
+GOVERNOR_FLOW
+  -> LOAD_LOCAL_GOVERNOR_CONFIG
+  -> CHECK_PYTHON_SQLITE_FTS5
+  -> INIT_INDEX_AND_AUDIT
+  -> INGEST_ORA_CANON
+  -> VALIDATE_GLK_ROUTE_AND_REGISTRY
+  -> RUN_ORCHESTRATED_RETRIEVAL_AND_CLIENT_PLAN
 ```
 
 ## Security Rules
@@ -62,7 +71,8 @@ CLIENT_ACTIVATION_FLOW
 - route manifests can be stored, but client content cannot
 - audit logs should store retrieval metadata, not private client payloads
 - Neroflux regulates circulation only; it does not govern truth
+- RAG Governor config wires local runtime only; it does not bypass HGOV/H-NERONS/Primordia
 
 ## Future Modules
 
-Later versions can add embeddings, graph retrieval, FastAPI, n8n hooks, live GitHub webhooks and real client RAG connectors.
+Later versions can add embeddings, graph retrieval, FastAPI, n8n hooks, Podman service profiles, live GitHub webhooks and real client RAG connectors.

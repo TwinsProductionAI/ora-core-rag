@@ -1,4 +1,4 @@
-﻿"""SQLite-backed canonical ORA retrieval index."""
+"""SQLite-backed canonical ORA retrieval index."""
 
 from __future__ import annotations
 
@@ -211,6 +211,10 @@ class ORACoreIndex:
             except sqlite3.Error:
                 rows = self._query_like(db, normalized_query, top_k)
 
+        if not rows:
+            with closing(self.connect()) as db:
+                rows = self._query_any_terms(db, normalized_query, top_k)
+
         results = [self._row_to_result(row) for row in rows]
         status = "SUPPORTED" if results else "UNSURE"
         packet = self._packet(query=query, status=status, results=results)
@@ -222,6 +226,25 @@ class ORACoreIndex:
         if not terms:
             return []
         where = " AND ".join(["c.text LIKE ?" for _ in terms])
+        params = [f"%{term}%" for term in terms]
+        params.append(top_k)
+        return db.execute(
+            f"""
+            SELECT c.chunk_id, c.source_id, d.title, d.uri, c.heading, c.text, c.metadata_json,
+                   0.0 AS score
+            FROM chunks c
+            JOIN documents d ON d.source_id = c.source_id
+            WHERE {where}
+            LIMIT ?
+            """,
+            params,
+        ).fetchall()
+
+    def _query_any_terms(self, db: sqlite3.Connection, query: str, top_k: int) -> list[sqlite3.Row]:
+        terms = TOKEN_RE.findall(query)
+        if not terms:
+            return []
+        where = " OR ".join(["c.text LIKE ?" for _ in terms])
         params = [f"%{term}%" for term in terms]
         params.append(top_k)
         return db.execute(

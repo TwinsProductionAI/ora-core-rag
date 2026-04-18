@@ -1,12 +1,12 @@
 ﻿# ORA_CORE_RAG
 
-Canonical retrieval and multi-RAG control layer for ORA_CORE_OS.
+Canonical retrieval, multi-RAG control and local RAG Governor layer for ORA_CORE_OS.
 
-Status: `0.3.0`
+Status: `0.4.0`
 
-`ORA_CORE_RAG` is a local-first, deterministic retrieval engine for the public ORA canon. It indexes ORA technical files, retrieves source-backed context, emits audit traces, and keeps client data outside the core memory boundary.
+`ORA_CORE_RAG` is a local-first, deterministic retrieval engine for the public ORA canon. It indexes ORA technical files, retrieves source-backed context, emits audit traces, keeps client data outside the core memory boundary, and can run a local RAG Governor profile.
 
-## V0.3 Capabilities
+## V0.4 Capabilities
 
 - automatic discovery and ingestion from public GitHub repositories
 - optional JSONL audit log for indexing, queries and orchestrator packets
@@ -15,6 +15,7 @@ Status: `0.3.0`
 - multi-RAG / agent registry planning
 - deterministic Neroflux fanout regulation
 - anti-contamination checks for cross-tenant resources
+- local RAG Governor config, status, bootstrap and governed run commands
 
 ## Quick Start
 
@@ -32,15 +33,10 @@ python -m ora_core_rag ingest --manifest examples/ora_sources.json --db data/ind
 python -m ora_core_rag query "PRIMORDIA truth layer" --db data/index/ora_core_rag.sqlite --audit-log data/audit/local.jsonl
 ```
 
-Discover public GitHub sources without ingesting:
+Discover and ingest public GitHub sources:
 
 ```powershell
 python -m ora_core_rag discover-github TwinsProductionAI/ora-core-specs --ref main --limit 10
-```
-
-Ingest a public GitHub repository directly:
-
-```powershell
 python -m ora_core_rag ingest-github TwinsProductionAI/ora-core-specs --ref main --limit 20 --db data/index/ora_core_rag.sqlite --audit-log data/audit/local.jsonl
 ```
 
@@ -62,10 +58,37 @@ Build a route-gated client activation plan:
 python -m ora_core_rag plan-client --route-manifest examples/client_route_manifest.json --registry examples/rag_registry.json --client-sensitivity 0.4
 ```
 
+## Local RAG Governor
+
+Check the local Governor:
+
+```powershell
+python -m ora_core_rag governor-status --config examples/rag_governor.local.json
+```
+
+Bootstrap the local Governor index and audit log:
+
+```powershell
+python -m ora_core_rag governor-bootstrap --config examples/rag_governor.local.json
+```
+
+Run governed retrieval plus client activation:
+
+```powershell
+python -m ora_core_rag governor-run --config examples/rag_governor.local.json --query "PRIMORDIA ORCHESTRATEUR_LLM"
+```
+
 ## Architecture
 
 ```text
 User request
+  |
+  v
+RAG_GOVERNOR
+  |-- loads local config
+  |-- checks Python + SQLite FTS5
+  |-- initializes index and audit
+  |-- validates GLK route + registry
   |
   v
 ORCHESTRATEUR_LLM
@@ -98,7 +121,12 @@ Client Route Gate + RAG Registry
 ORA_CORE_RAG indexes ORA canon only.
 Client RAGs require a GLK tenant route and stay outside the core index.
 Neroflux can reduce fanout, but truth still goes through HGOV/H-NERONS/Primordia.
+The RAG Governor wires the local runtime; it does not bypass governance.
 ```
+
+## Podman Note
+
+Podman Desktop can be used later for service deployment. V0.4 does not require containers: Python + SQLite FTS5 are enough for the local Governor.
 
 ## Non-Goals
 

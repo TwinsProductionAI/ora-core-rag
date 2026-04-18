@@ -6,6 +6,7 @@ import argparse
 import json
 
 from .github_sources import GitHubSourceDiscovery
+from .governor import RAGGovernor
 from .index import ORACoreIndex
 from .neroflux import NerofluxFanoutRegulator
 from .orchestrator import ORAOrchestratorConnector
@@ -50,25 +51,13 @@ def cmd_ingest(args: argparse.Namespace) -> None:
 
 def cmd_discover_github(args: argparse.Namespace) -> None:
     discovery = GitHubSourceDiscovery()
-    manifest = discovery.manifest(
-        args.repo,
-        ref=args.ref,
-        canon_level=args.canon_level,
-        tags=args.tag or [],
-        limit=args.limit,
-    )
+    manifest = discovery.manifest(args.repo, ref=args.ref, canon_level=args.canon_level, tags=args.tag or [], limit=args.limit)
     _print_json(manifest)
 
 
 def cmd_ingest_github(args: argparse.Namespace) -> None:
     index = _index_from_args(args)
-    result = index.ingest_github_repo(
-        args.repo,
-        ref=args.ref,
-        canon_level=args.canon_level,
-        tags=args.tag or [],
-        limit=args.limit,
-    )
+    result = index.ingest_github_repo(args.repo, ref=args.ref, canon_level=args.canon_level, tags=args.tag or [], limit=args.limit)
     _print_json({"status": "INGESTED", "repo": args.repo, "ref": args.ref, "sources": result})
 
 
@@ -112,15 +101,22 @@ def cmd_plan_client(args: argparse.Namespace) -> None:
     _print_json(plan)
 
 
+def cmd_governor_status(args: argparse.Namespace) -> None:
+    _print_json(RAGGovernor.from_path(args.config).status())
+
+
+def cmd_governor_bootstrap(args: argparse.Namespace) -> None:
+    _print_json(RAGGovernor.from_path(args.config).bootstrap(ingest=args.ingest))
+
+
+def cmd_governor_run(args: argparse.Namespace) -> None:
+    _print_json(RAGGovernor.from_path(args.config).run(query=args.query))
+
+
 def cmd_validate_route(args: argparse.Namespace) -> None:
     gate = ClientRouteGate()
     route = gate.load_manifest(args.manifest)
-    _print_json({
-        "status": "VALID",
-        "route_id": route["route_id"],
-        "tenant_id": route["tenant_id"],
-        "manifest_hash": route["manifest_hash"],
-    })
+    _print_json({"status": "VALID", "route_id": route["route_id"], "tenant_id": route["tenant_id"], "manifest_hash": route["manifest_hash"]})
 
 
 def cmd_authorize(args: argparse.Namespace) -> None:
@@ -205,6 +201,20 @@ def build_parser() -> argparse.ArgumentParser:
     plan_client.add_argument("--resource", action="append", default=[])
     _add_neroflux_args(plan_client, include_agent_count=False)
     plan_client.set_defaults(func=cmd_plan_client)
+
+    governor_status = sub.add_parser("governor-status", help="Validate local RAG Governor configuration and environment")
+    governor_status.add_argument("--config", default="examples/rag_governor.local.json")
+    governor_status.set_defaults(func=cmd_governor_status)
+
+    governor_bootstrap = sub.add_parser("governor-bootstrap", help="Initialize and optionally ingest the local RAG Governor index")
+    governor_bootstrap.add_argument("--config", default="examples/rag_governor.local.json")
+    governor_bootstrap.add_argument("--ingest", action=argparse.BooleanOptionalAction, default=True)
+    governor_bootstrap.set_defaults(func=cmd_governor_bootstrap)
+
+    governor_run = sub.add_parser("governor-run", help="Run a governed ORA retrieval + client activation plan")
+    governor_run.add_argument("--config", default="examples/rag_governor.local.json")
+    governor_run.add_argument("--query", default=None)
+    governor_run.set_defaults(func=cmd_governor_run)
 
     validate_route = sub.add_parser("validate-route", help="Validate a GLK client route manifest")
     validate_route.add_argument("--manifest", required=True)

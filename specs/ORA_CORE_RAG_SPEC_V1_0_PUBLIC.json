@@ -1,7 +1,7 @@
 ﻿{
     "module":  {
                    "id":  "ORA_CORE_RAG",
-                   "version":  "1.2.0-public-draft",
+                   "version":  "1.3.0-public-draft",
                    "status":  "PUBLIC_DRAFT",
                    "type":  "canonical_retrieval_layer",
                    "role":  "Retrieve source-backed ORA canon context without storing client payloads.",
@@ -52,7 +52,8 @@
                              "OPTIONAL_ORCHESTRATEUR_LLM_PACKET",
                              "OPTIONAL_JSONL_AUDIT",
                              "OPTIONAL_CLIENT_ROUTE_PLANNING",
-                             "OPTIONAL_NEROFLUX_FANOUT_REGULATION"
+                             "OPTIONAL_NEROFLUX_FANOUT_REGULATION",
+                             "OPTIONAL_RAG_GOVERNOR_BOOTSTRAP"
                          ],
     "success_criteria":  [
                              "retrieves exact ORA module names",
@@ -136,5 +137,20 @@
                                             "require_human_review",
                                             "actions"
                                         ]
-                        }
+                        },
+    "rag_governor":  {
+                         "module":  "RAG_GOVERNOR",
+                         "version":  "0.4.0",
+                         "commands":  [
+                                          "governor-status",
+                                          "governor-bootstrap",
+                                          "governor-run"
+                                      ],
+                         "local_requirements":  [
+                                                    "python",
+                                                    "sqlite_fts5"
+                                                ],
+                         "container_required":  false,
+                         "podman_optional":  true
+                     }
 }

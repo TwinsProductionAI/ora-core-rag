@@ -1,10 +1,10 @@
-﻿[build-system]
+[build-system]
 requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "ora-core-rag"
-version = "0.3.0"
+version = "0.4.0"
 description = "Canonical retrieval layer for ORA_CORE_OS"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -19,5 +19,3 @@ ora-core-rag = "ora_core_rag.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-
