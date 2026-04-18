@@ -4,4 +4,5 @@ from .index import ORACoreIndex
 from .route_gate import ClientRouteGate, RouteGateError
 
 __all__ = ["ORACoreIndex", "ClientRouteGate", "RouteGateError"]
-__version__ = "0.1.0"
+__version__ = "0.2.0"
+

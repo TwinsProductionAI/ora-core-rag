@@ -9,7 +9,9 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
+from .audit import AuditLogger
 from .chunker import chunk_text
+from .github_sources import GitHubSourceDiscovery
 from .hashing import sha256_text
 from .manifest import CORE_SCOPE, load_source_manifest, read_uri
 
@@ -23,9 +25,10 @@ class IndexError(ValueError):
 class ORACoreIndex:
     """Local SQLite FTS5 index for ORA core documents."""
 
-    def __init__(self, db_path: str | Path):
+    def __init__(self, db_path: str | Path, *, audit_log: str | Path | None = None):
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.audit = AuditLogger(audit_log)
 
     def connect(self) -> sqlite3.Connection:
         connection = sqlite3.connect(str(self.db_path))
@@ -96,6 +99,7 @@ class ORACoreIndex:
                 )
                 """
             )
+            db.commit()
 
     def add_document(self, source: dict[str, Any], text: str) -> dict[str, Any]:
         source_id = str(source.get("id", "")).strip()
@@ -146,26 +150,48 @@ class ORACoreIndex:
                     "INSERT INTO chunk_fts (chunk_id, source_id, title, text) VALUES (?, ?, ?, ?)",
                     (chunk_id, source_id, title, chunk.text),
                 )
-
-
             db.commit()
 
-        return {"source_id": source_id, "chunk_count": len(chunks), "source_hash": source_hash}
+        result = {"source_id": source_id, "chunk_count": len(chunks), "source_hash": source_hash}
+        self.audit.emit("document_indexed", result)
+        return result
 
     def ingest_manifest(self, manifest_path: str | Path) -> list[dict[str, Any]]:
         manifest_path = Path(manifest_path)
         sources = load_source_manifest(manifest_path)
+        results = self.ingest_sources(sources, base_dir=manifest_path.parent)
+        self.audit.emit("manifest_ingested", {"manifest": str(manifest_path), "source_count": len(results)})
+        return results
+
+    def ingest_sources(self, sources: list[dict[str, Any]], *, base_dir: str | Path | None = None) -> list[dict[str, Any]]:
         results = []
         for source in sources:
-            text = read_uri(str(source["uri"]), base_dir=manifest_path.parent)
+            text = read_uri(str(source["uri"]), base_dir=base_dir)
             results.append(self.add_document(source, text))
+        return results
+
+    def ingest_github_repo(
+        self,
+        repo: str,
+        *,
+        ref: str = "main",
+        canon_level: str = "RUNTIME",
+        tags: list[str] | None = None,
+        limit: int | None = None,
+    ) -> list[dict[str, Any]]:
+        discovery = GitHubSourceDiscovery()
+        sources = discovery.discover(repo, ref=ref, canon_level=canon_level, tags=tags, limit=limit)
+        results = self.ingest_sources(sources)
+        self.audit.emit("github_repo_ingested", {"repo": repo, "ref": ref, "source_count": len(results)})
         return results
 
     def query(self, query: str, *, top_k: int = 5) -> dict[str, Any]:
         self.initialize()
         normalized_query = self._normalize_query(query)
         if not normalized_query:
-            return self._packet(query=query, status="UNSURE", results=[])
+            packet = self._packet(query=query, status="UNSURE", results=[])
+            self.audit.emit("query", {"query": query, "status": packet["status"], "result_count": 0})
+            return packet
 
         with closing(self.connect()) as db:
             try:
@@ -187,7 +213,9 @@ class ORACoreIndex:
 
         results = [self._row_to_result(row) for row in rows]
         status = "SUPPORTED" if results else "UNSURE"
-        return self._packet(query=query, status=status, results=results)
+        packet = self._packet(query=query, status=status, results=results)
+        self.audit.emit("query", {"query": query, "status": status, "result_count": len(results)})
+        return packet
 
     def _query_like(self, db: sqlite3.Connection, query: str, top_k: int) -> list[sqlite3.Row]:
         terms = TOKEN_RE.findall(query)
@@ -234,5 +262,3 @@ class ORACoreIndex:
     def _normalize_query(self, query: str) -> str:
         tokens = TOKEN_RE.findall(query)
         return " ".join(tokens)
-
-
