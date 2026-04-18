@@ -1,0 +1,29 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/ora_core_rag.schema.json",
+  "title": "ORA_CORE_RAG Source Manifest",
+  "type": "object",
+  "required": ["version", "sources"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string", "minLength": 1 },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "uri", "scope"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Za-z0-9_.-]+$" },
+          "uri": { "type": "string", "minLength": 1 },
+          "kind": { "type": "string", "enum": ["markdown", "json", "text", "python", "powershell", "unknown"], "default": "unknown" },
+          "scope": { "type": "string", "const": "ORA_CORE" },
+          "canon_level": { "type": "string", "enum": ["CORE", "ANNEX", "RUNTIME", "SPEC", "WHITEPAPER", "EXAMPLE"], "default": "CORE" },
+          "title": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" }, "default": [] }
+        }
+      }
+    }
+  }
+}

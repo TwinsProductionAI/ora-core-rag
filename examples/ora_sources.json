@@ -1,0 +1,32 @@
+﻿{
+  "version": "1.0.0",
+  "sources": [
+    {
+      "id": "ora_core_public_spec",
+      "uri": "https://raw.githubusercontent.com/TwinsProductionAI/Coeur_ORA_GrenaPrompt_repo/main/docs/ORA_CORE_OS_PUBLIC_SPEC.md",
+      "kind": "markdown",
+      "scope": "ORA_CORE",
+      "canon_level": "SPEC",
+      "title": "ORA_CORE_OS Public Spec",
+      "tags": ["ora", "canon", "spec"]
+    },
+    {
+      "id": "ora_modules_manifest",
+      "uri": "https://raw.githubusercontent.com/TwinsProductionAI/Coeur_ORA_GrenaPrompt_repo/main/docs/GPV2/modules_manifest.json",
+      "kind": "json",
+      "scope": "ORA_CORE",
+      "canon_level": "CORE",
+      "title": "ORA Core Modules Manifest",
+      "tags": ["modules", "manifest", "gpv2"]
+    },
+    {
+      "id": "orchestrateur_llm_spec",
+      "uri": "https://raw.githubusercontent.com/TwinsProductionAI/ora-core-specs/main/specs/orchestrateur-llm/ORA_CORE_OS_ORCHESTRATEUR_LLM_SPEC_V2_0_PUBLIC.json",
+      "kind": "json",
+      "scope": "ORA_CORE",
+      "canon_level": "SPEC",
+      "title": "ORA Orchestrateur LLM Spec",
+      "tags": ["orchestrator", "routing", "gpv2"]
+    }
+  ]
+}

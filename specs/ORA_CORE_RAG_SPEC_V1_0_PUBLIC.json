@@ -1,0 +1,62 @@
+﻿{
+  "module": {
+    "id": "ORA_CORE_RAG",
+    "version": "1.0.0-public-draft",
+    "status": "PUBLIC_DRAFT",
+    "type": "canonical_retrieval_layer",
+    "role": "Retrieve source-backed ORA canon context without storing client payloads.",
+    "depends_on": [
+      "ORCHESTRATEUR_LLM",
+      "HGOV",
+      "GPV2",
+      "ORA_N6"
+    ]
+  },
+  "authority_order": [
+    "SYSTEM_OR_PROJECT_INSTRUCTIONS",
+    "ORCHESTRATEUR_LLM",
+    "HGOV_OR_PRIMORDIA",
+    "GPV2",
+    "ORA_CORE_RAG",
+    "CLIENT_RAG_WITH_VALID_ROUTE",
+    "EXAMPLES"
+  ],
+  "core_invariants": [
+    "ORA_CORE_RAG indexes ORA canon only",
+    "Client payloads must not be written into ORA_CORE_RAG",
+    "Client RAG access requires a valid GLK route manifest",
+    "No source means UNSURE, not invention",
+    "Retrieval traces must keep source ids and hashes"
+  ],
+  "retrieval_policy": {
+    "default_status_if_no_source": "UNSURE",
+    "default_top_k": 5,
+    "source_required_for_factual_claims": true,
+    "accepted_core_scope": "ORA_CORE",
+    "deny_client_scope_in_core_index": true
+  },
+  "route_policy": {
+    "route_id_required_for_client_rag": true,
+    "route_id_format": "GLK[TENANT:<TENANT_ID>:<ENV>:v<N>]",
+    "cross_tenant_access": "DENY",
+    "unscoped_client_memory": "DENY",
+    "write_client_payload_to_core": "DENY"
+  },
+  "runtime_pipeline": [
+    "LOAD_SOURCE_MANIFEST",
+    "FETCH_OR_READ_SOURCE",
+    "HASH_SOURCE",
+    "CHUNK_SOURCE",
+    "INDEX_CHUNKS_FTS5",
+    "RETRIEVE_SOURCE_BACKED_CONTEXT",
+    "EMIT_RETRIEVAL_AUDIT"
+  ],
+  "success_criteria": [
+    "retrieves exact ORA module names",
+    "keeps source hashes stable",
+    "denies non-ORA_CORE document ingestion",
+    "denies client access without route",
+    "denies cross-tenant access",
+    "runs with Python standard library only"
+  ]
+}

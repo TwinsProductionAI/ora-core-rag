@@ -1,0 +1,21 @@
+﻿[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ora-core-rag"
+version = "0.1.0"
+description = "Canonical retrieval layer for ORA_CORE_OS"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [
+  { name = "TwinsProductionAI" }
+]
+dependencies = []
+
+[project.scripts]
+ora-core-rag = "ora_core_rag.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

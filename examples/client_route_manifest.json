@@ -1,0 +1,21 @@
+﻿{
+  "route_id": "GLK[TENANT:K7F3:PROD:v1]",
+  "tenant_id": "K7F3",
+  "environment": "prod",
+  "isolation": "strict",
+  "allowed_rags": ["K7F3_RAG_DOCS", "K7F3_RAG_SUPPORT"],
+  "allowed_agents": ["K7F3_AGENT_SUPPORT"],
+  "forbidden_scopes": ["OTHER_TENANTS", "UNSCOPED_MEMORY", "ORA_CORE_PRIVATE"],
+  "memory_policy": {
+    "rem_scope": "tenant_session",
+    "rem_plus_scope": "tenant_persistent",
+    "cross_tenant_write": false,
+    "write_to_ora_core": false
+  },
+  "retrieval_policy": {
+    "source_required": true,
+    "max_rag_fanout": 2,
+    "top_k_per_rag": 5,
+    "require_hnerons_if_factual": true
+  }
+}

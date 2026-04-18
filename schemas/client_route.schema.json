@@ -1,0 +1,20 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/client_route.schema.json",
+  "title": "ORA Client Route Manifest",
+  "type": "object",
+  "required": ["route_id", "tenant_id", "environment", "isolation"],
+  "additionalProperties": true,
+  "properties": {
+    "route_id": {
+      "type": "string",
+      "pattern": "^GLK\\[TENANT:[A-Z0-9_-]+:(DEV|STAGE|PROD):v[0-9]+\\]$"
+    },
+    "tenant_id": { "type": "string", "pattern": "^[A-Z0-9_-]+$" },
+    "environment": { "type": "string", "enum": ["dev", "stage", "prod"] },
+    "isolation": { "type": "string", "enum": ["strict"] },
+    "allowed_rags": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "allowed_agents": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "forbidden_scopes": { "type": "array", "items": { "type": "string" }, "default": ["OTHER_TENANTS", "UNSCOPED_MEMORY"] }
+  }
+}

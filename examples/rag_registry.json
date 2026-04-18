@@ -1,0 +1,21 @@
+﻿{
+  "version": "1.0.0",
+  "entries": [
+    {
+      "id": "ORA_CORE_RAG",
+      "type": "rag",
+      "scope": "ORA_CORE",
+      "source_required": true,
+      "can_answer_final": false
+    },
+    {
+      "id": "K7F3_RAG_DOCS",
+      "type": "rag",
+      "scope": "TENANT",
+      "tenant_id": "K7F3",
+      "allowed_roles": ["tenant_user", "tenant_admin"],
+      "source_required": true,
+      "can_answer_final": false
+    }
+  ]
+}

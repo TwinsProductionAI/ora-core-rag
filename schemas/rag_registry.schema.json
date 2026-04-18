@@ -1,0 +1,27 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/rag_registry.schema.json",
+  "title": "ORA RAG and Agent Registry",
+  "type": "object",
+  "required": ["version", "entries"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string" },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "scope", "can_answer_final"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string", "enum": ["rag", "agent", "llm"] },
+          "scope": { "type": "string", "enum": ["ORA_CORE", "TENANT", "DEPARTMENT", "PRIVATE_CASE"] },
+          "tenant_id": { "type": "string" },
+          "allowed_roles": { "type": "array", "items": { "type": "string" }, "default": [] },
+          "source_required": { "type": "boolean", "default": true },
+          "can_answer_final": { "type": "boolean", "const": false }
+        }
+      }
+    }
+  }
+}
