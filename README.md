@@ -16,6 +16,7 @@ Status: `0.4.0`
 - deterministic Neroflux fanout regulation
 - anti-contamination checks for cross-tenant resources
 - local RAG Governor config, status, bootstrap and governed run commands
+- ARCH+ ArchiPersona activation packet generation for M10 v3
 
 ## Quick Start
 
@@ -71,6 +72,15 @@ Bootstrap the local Governor index and audit log:
 ```powershell
 python -m ora_core_rag governor-bootstrap --config examples/rag_governor.local.json
 ```
+
+
+Build an ARCH+ ArchiPersona activation packet:
+
+```powershell
+python -m ora_core_rag arch-persona-activate --payload examples/arch_persona_activation.json
+```
+
+See [docs/ARCH_PLUS_IMPLANT.md](docs/ARCH_PLUS_IMPLANT.md) for the RAG-safe M10 ARCH+ v3 implant.
 
 Run governed retrieval plus client activation:
 

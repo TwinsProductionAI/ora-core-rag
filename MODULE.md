@@ -76,3 +76,18 @@ GOVERNOR_FLOW
 ## Future Modules
 
 Later versions can add embeddings, graph retrieval, FastAPI, n8n hooks, Podman service profiles, live GitHub webhooks and real client RAG connectors.
+
+## ARCH+ M10 Implant
+
+`ORA_CORE_RAG` now includes a small ARCH+ v3 implant for `MODULE_ARCH_PLUS` at code position `M10`.
+
+It builds route-gated ArchiPersona activation packets and keeps private client profile payloads outside the ORA core index.
+
+Files:
+
+- `src/ora_core_rag/arch_persona.py`
+- `schemas/arch_persona_activation.schema.json`
+- `examples/arch_persona_activation.json`
+- `specs/ORA_CORE_RAG_ARCH_PLUS_IMPLANT_V1_0.json`
+- `docs/ARCH_PLUS_IMPLANT.md`
+- `tests/test_arch_persona.py`

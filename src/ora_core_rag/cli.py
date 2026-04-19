@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 
+from .arch_persona import build_arch_persona_activation, load_activation_payload
 from .github_sources import GitHubSourceDiscovery
 from .governor import RAGGovernor
 from .index import ORACoreIndex
@@ -113,6 +115,14 @@ def cmd_governor_run(args: argparse.Namespace) -> None:
     _print_json(RAGGovernor.from_path(args.config).run(query=args.query))
 
 
+
+def cmd_arch_persona_activate(args: argparse.Namespace) -> None:
+    with Path(args.payload).open("r", encoding="utf-8-sig") as handle:
+        payload = json.load(handle)
+    answers, route_manifest, mode = load_activation_payload(payload)
+    _print_json(build_arch_persona_activation(answers, route_manifest=route_manifest, mode=mode))
+
+
 def cmd_validate_route(args: argparse.Namespace) -> None:
     gate = ClientRouteGate()
     route = gate.load_manifest(args.manifest)
@@ -216,6 +226,10 @@ def build_parser() -> argparse.ArgumentParser:
     governor_run.add_argument("--query", default=None)
     governor_run.set_defaults(func=cmd_governor_run)
 
+
+    arch_persona = sub.add_parser("arch-persona-activate", help="Build a route-gated ARCH+ ArchiPersona activation packet")
+    arch_persona.add_argument("--payload", required=True, help="JSON payload containing route_manifest, mode and answers")
+    arch_persona.set_defaults(func=cmd_arch_persona_activate)
     validate_route = sub.add_parser("validate-route", help="Validate a GLK client route manifest")
     validate_route.add_argument("--manifest", required=True)
     validate_route.set_defaults(func=cmd_validate_route)
