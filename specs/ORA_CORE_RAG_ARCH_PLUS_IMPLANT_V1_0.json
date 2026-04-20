@@ -1,0 +1,61 @@
+{
+  "module": {
+    "id": "ORA_CORE_RAG_ARCH_PLUS_IMPLANT",
+    "version": "1.0.0",
+    "status": "PUBLIC_DRAFT",
+    "type": "arch_plus_runtime_implant",
+    "role": "Build route-gated ARCH+ ArchiPersona activation packets without writing client profile payloads into ORA core.",
+    "binds_to": {
+      "gpv2_module_id": "MODULE_ARCH_PLUS",
+      "code_pos": "M10",
+      "variant_id": "M10_ARCH_PLUS_V3",
+      "variant_version": "3.0.0"
+    }
+  },
+  "authority_order": [
+    "SYSTEM_OR_PROJECT_INSTRUCTIONS",
+    "HGOV_OR_PRIMORDIA",
+    "GPV2_MODULE_ARCH_PLUS_M10",
+    "ORA_CORE_RAG_ROUTE_GATE",
+    "TENANT_PROFILE_STORE"
+  ],
+  "core_invariants": [
+    "ARCH+ remains code position M10",
+    "ArchiPersona activation requires a valid GLK tenant route",
+    "Missing fields are SUGGESTION or INCERTAIN, never invented facts",
+    "Personae count must be <= 4",
+    "ARC++ count must be <= 4",
+    "Client private profile payloads must not be written into ORA_CORE_RAG core index"
+  ],
+  "runtime_pipeline": [
+    "LOAD_ACTIVATION_PAYLOAD",
+    "VALIDATE_GLK_ROUTE_MANIFEST",
+    "PREFILL_FOUNDATION_GROUPS",
+    "MARK_FIELD_SOURCES",
+    "RUN_COHERENCE_TESTS",
+    "EMIT_ARCHIPERSONA_PACKET"
+  ],
+  "allowed_core_index_content": [
+    "ARCH+ public GPV2 spec",
+    "ArchiPersona activation schema",
+    "Declarative tests",
+    "Public documentation"
+  ],
+  "denied_core_index_content": [
+    "private client profile payload",
+    "unscoped tenant memory",
+    "raw personal identifiers unless explicitly authorized and scoped"
+  ],
+  "cli": {
+    "command": "arch-persona-activate",
+    "payload_schema": "schemas/arch_persona_activation.schema.json",
+    "example": "examples/arch_persona_activation.json"
+  },
+  "success_criteria": [
+    "returns all six foundation groups",
+    "preserves field source status",
+    "denies more than four Personae",
+    "denies more than four ARC++",
+    "returns policy.client_payload_to_core DENY"
+  ]
+}
