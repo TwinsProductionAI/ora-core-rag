@@ -1,10 +1,18 @@
-﻿# ORA_CORE_RAG
+# ora-core-rag
 
-Canonical retrieval, multi-RAG control and local RAG Governor layer for ORA_CORE_OS.
+Canonical retrieval, multi-RAG control, and local RAG Governor layer for ORA Core OS.
 
 Status: `0.4.0`
 
-`ORA_CORE_RAG` is a local-first, deterministic retrieval engine for the public ORA canon. It indexes ORA technical files, retrieves source-backed context, emits audit traces, keeps client data outside the core memory boundary, and can run a local RAG Governor profile.
+`ora-core-rag` is a local-first, deterministic retrieval engine for the public ORA canon. It indexes ORA technical files, retrieves source-backed context, emits audit traces, keeps client data outside the core memory boundary, and can run a local RAG Governor profile.
+
+## Repository Role
+
+Read this after [ora-core-os](https://github.com/TwinsProductionAI/Coeur_ORA_GrenaPrompt_repo) when you need source-backed retrieval and audit traces around the ORA canon.
+
+| Public order | Repository role |
+| ---: | --- |
+| 3 | Canonical retrieval layer, route gates, audit trace, and RAG Governor. |
 
 ## V0.4 Capabilities
 
@@ -16,6 +24,7 @@ Status: `0.4.0`
 - deterministic Neroflux fanout regulation
 - anti-contamination checks for cross-tenant resources
 - local RAG Governor config, status, bootstrap and governed run commands
+- ARCH+ ArchiPersona activation packet generation for M10 v3
 
 ## Quick Start
 
@@ -72,6 +81,14 @@ Bootstrap the local Governor index and audit log:
 python -m ora_core_rag governor-bootstrap --config examples/rag_governor.local.json
 ```
 
+Build an ARCH+ ArchiPersona activation packet:
+
+```powershell
+python -m ora_core_rag arch-persona-activate --payload examples/arch_persona_activation.json
+```
+
+See [docs/ARCH_PLUS_IMPLANT.md](docs/ARCH_PLUS_IMPLANT.md) for the RAG-safe M10 ARCH+ v3 implant.
+
 Run governed retrieval plus client activation:
 
 ```powershell
@@ -123,6 +140,16 @@ Client RAGs require a GLK tenant route and stay outside the core index.
 Neroflux can reduce fanout, but truth still goes through HGOV/H-NERONS/Primordia.
 The RAG Governor wires the local runtime; it does not bypass governance.
 ```
+
+## Public Repository Map
+
+| Order | Repository | Role |
+| ---: | --- | --- |
+| 1 | [ora-core-os](https://github.com/TwinsProductionAI/Coeur_ORA_GrenaPrompt_repo) | Architecture and canonical module order. |
+| 2 | [ora-core-runtime](https://github.com/TwinsProductionAI/ora-core-runtime) | Runnable runtime and tests. |
+| 3 | `ora-core-rag` | Retrieval layer and RAG Governor. |
+| 4 | [ora-core-specs](https://github.com/TwinsProductionAI/ora-core-specs) | Technical specifications. |
+| 6 | [ora-core-neroflux](https://github.com/TwinsProductionAI/gpv2-exotique-neroflux) | Cognitive flow-control module used by fanout regulation. |
 
 ## Note
 
