@@ -1,4 +1,4 @@
-﻿# MODULE_ORA_CORE_RAG
+# MODULE_ORA_CORE_RAG
 
 Version: `0.4.0`
 
@@ -72,6 +72,21 @@ GOVERNOR_FLOW
 - audit logs should store retrieval metadata, not private client payloads
 - Neroflux regulates circulation only; it does not govern truth
 - RAG Governor config wires local runtime only; it does not bypass HGOV/H-NERONS/Primordia
+
+## ARCH+ M10 Implant
+
+`ORA_CORE_RAG` includes a small ARCH+ v3 implant for `MODULE_ARCH_PLUS` at code position `M10`.
+
+It builds route-gated ArchiPersona activation packets and keeps private client profile payloads outside the ORA core index.
+
+Files:
+
+- `src/ora_core_rag/arch_persona.py`
+- `schemas/arch_persona_activation.schema.json`
+- `examples/arch_persona_activation.json`
+- `specs/ORA_CORE_RAG_ARCH_PLUS_IMPLANT_V1_0.json`
+- `docs/ARCH_PLUS_IMPLANT.md`
+- `tests/test_arch_persona.py`
 
 ## Future Modules
 
