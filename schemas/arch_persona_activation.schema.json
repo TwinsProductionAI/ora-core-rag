@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/arch_persona_activation.schema.json",
+  "title": "ARCH+ ArchiPersona Activation Payload",
+  "type": "object",
+  "required": ["route_manifest"],
+  "additionalProperties": false,
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": ["FAST_PREFILL", "DEEP_CALIBRATION"],
+      "default": "FAST_PREFILL"
+    },
+    "route_manifest": {
+      "type": "object",
+      "required": ["route_id", "tenant_id", "environment", "isolation"],
+      "additionalProperties": true,
+      "properties": {
+        "route_id": {"type": "string"},
+        "tenant_id": {"type": "string"},
+        "environment": {"type": "string"},
+        "isolation": {"type": "string", "const": "strict"},
+        "allowed_rags": {"type": "array", "items": {"type": "string"}},
+        "allowed_agents": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "answers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "context_identity": {"$ref": "#/$defs/context_identity"},
+        "goal_why": {"$ref": "#/$defs/goal_why"},
+        "tone_emo": {"$ref": "#/$defs/tone_emo"},
+        "limits_risk": {"$ref": "#/$defs/limits_risk"},
+        "personae_start": {"$ref": "#/$defs/personae_start"},
+        "arc_plus_plus": {"$ref": "#/$defs/arc_plus_plus"}
+      }
+    }
+  },
+  "$defs": {
+    "context_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "role": {"type": "string"},
+        "identity": {"type": "string"},
+        "cognitive_posture": {"type": "string"}
+      }
+    },
+    "goal_why": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "objective": {"type": "string"},
+        "mission": {"type": "string"},
+        "reason_to_exist": {"type": "string"}
+      }
+    },
+    "tone_emo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tone": {"type": "string"},
+        "emo_profile": {"type": "string"},
+        "intensity": {"type": "integer", "minimum": 0, "maximum": 100}
+      }
+    },
+    "limits_risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "risk": {"type": "integer", "minimum": 0, "maximum": 100},
+        "audacity": {"type": "integer", "minimum": 0, "maximum": 100},
+        "reflective_depth": {"type": "integer", "minimum": 0, "maximum": 100}
+      }
+    },
+    "personae_start": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "personae": {"type": "array", "maxItems": 4, "items": {"type": "string"}}
+      }
+    },
+    "arc_plus_plus": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "arcs": {"type": "array", "maxItems": 4, "items": {"type": "string"}}
+      }
+    }
+  }
+}
