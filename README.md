@@ -8,7 +8,7 @@ Status: `0.4.0`
 
 ## Repository Role
 
-Read this after [ora-core-os](https://github.com/TwinsProductionAI/Coeur_ORA_GrenaPrompt_repo) when you need source-backed retrieval and audit traces around the ORA canon.
+Read this after [ora-core-os](https://github.com/TwinsProductionAI/ora-core-os) when you need source-backed retrieval and audit traces around the ORA canon.
 
 | Public order | Repository role |
 | ---: | --- |
@@ -145,11 +145,11 @@ The RAG Governor wires the local runtime; it does not bypass governance.
 
 | Order | Repository | Role |
 | ---: | --- | --- |
-| 1 | [ora-core-os](https://github.com/TwinsProductionAI/Coeur_ORA_GrenaPrompt_repo) | Architecture and canonical module order. |
+| 1 | [ora-core-os](https://github.com/TwinsProductionAI/ora-core-os) | Architecture and canonical module order. |
 | 2 | [ora-core-runtime](https://github.com/TwinsProductionAI/ora-core-runtime) | Runnable runtime and tests. |
 | 3 | `ora-core-rag` | Retrieval layer and RAG Governor. |
 | 4 | [ora-core-specs](https://github.com/TwinsProductionAI/ora-core-specs) | Technical specifications. |
-| 6 | [ora-core-neroflux](https://github.com/TwinsProductionAI/gpv2-exotique-neroflux) | Cognitive flow-control module used by fanout regulation. |
+| 6 | [ora-core-neroflux](https://github.com/TwinsProductionAI/ora-core-neroflux) | Cognitive flow-control module used by fanout regulation. |
 
 ## Note
 
