@@ -1,9 +1,9 @@
-﻿{
+{
   "version": "1.0.0",
   "sources": [
     {
       "id": "ora_core_public_spec",
-      "uri": "https://raw.githubusercontent.com/TwinsProductionAI/Coeur_ORA_GrenaPrompt_repo/main/docs/ORA_CORE_OS_PUBLIC_SPEC.md",
+      "uri": "https://raw.githubusercontent.com/TwinsProductionAI/ora-core-os/main/docs/ORA_CORE_OS_PUBLIC_SPEC.md",
       "kind": "markdown",
       "scope": "ORA_CORE",
       "canon_level": "SPEC",
@@ -12,7 +12,7 @@
     },
     {
       "id": "ora_modules_manifest",
-      "uri": "https://raw.githubusercontent.com/TwinsProductionAI/Coeur_ORA_GrenaPrompt_repo/main/docs/GPV2/modules_manifest.json",
+      "uri": "https://raw.githubusercontent.com/TwinsProductionAI/ora-core-os/main/docs/GPV2/modules_manifest.json",
       "kind": "json",
       "scope": "ORA_CORE",
       "canon_level": "CORE",
