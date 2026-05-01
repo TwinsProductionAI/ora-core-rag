@@ -14,6 +14,11 @@ Read this after [ora-core-os](https://github.com/TwinsProductionAI/ora-core-os) 
 | ---: | --- |
 | 3 | Canonical retrieval layer, route gates, audit trace, and RAG Governor. |
 
+## White Paper
+
+- [ORA Core RAG Governance White Paper](docs/ORA_CORE_RAG_Governance_WhitePaper.md)  
+  Strategic and technical overview of the local-first RAG Governor, route gates, audit traces, client separation, and verification boundaries.
+
 ## V0.4 Capabilities
 
 - automatic discovery and ingestion from public GitHub repositories
