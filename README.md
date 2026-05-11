@@ -14,10 +14,15 @@ Read this after [ora-core-os](https://github.com/TwinsProductionAI/ora-core-os) 
 | ---: | --- |
 | 3 | Canonical retrieval layer, route gates, audit trace, and RAG Governor. |
 
-## White Paper
+## White Papers
 
 - [ORA Core RAG Governance White Paper](docs/ORA_CORE_RAG_Governance_WhitePaper.md)  
   Strategic and technical overview of the local-first RAG Governor, route gates, audit traces, client separation, and verification boundaries.
+
+- [ORA Core RAG Architecture White Paper](docs/ORA_CORE_RAG_ARCHITECTURE_WhitePaper.md)  
+  Shorter and more technical architecture note focused on retrieval flow, route gates, fanout regulation, evidence handoff and architectural invariants.
+
+- [Global ORA White Papers Index](https://github.com/TwinsProductionAI/ora-core-specs/blob/main/WHITEPAPERS.md)
 
 ## V0.4 Capabilities
 
